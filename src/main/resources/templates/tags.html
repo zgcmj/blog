@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="_fragments :: head">
+    <meta charset="UTF-8">
+                <!--    让移动端更好阅览   不缩放-->
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Title</title>
+
+     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <link rel="stylesheet" href="../static/css/me.css">
+</head>
+<body>
+    <!--导航-->
+        <!-- 使用semantic 的css 需要以ui打头   -->
+    <nav th:replace="_fragments :: menu(3)" class="ui inverted attached segment m-padded-tb-mini m-shadow-small">
+        <div class="ui container">
+            <div class="ui inverted secondary stackable menu">
+                <h2 class="ui teal header item">BCMJ</h2>
+                <a href="#" class="m-item item m-mobile-hide"><i class="home icon"></i>首页</a>
+                <a href="#" class="active m-item item m-mobile-hide"><i class=" idea icon"></i>分类</a>
+                <a href="#" class=" m-item item m-mobile-hide"><i class=" tags icon"></i>标签</a>
+                <a href="#" class=" m-item item m-mobile-hide"><i class=" clone icon"></i>归档</a>
+                <a href="#" class=" m-item item m-mobile-hide"><i class=" info icon"></i>关于我</a>
+                <div class="right m-item item m-mobile-hide">
+                    <div class="ui icon inverted transparent input">
+                        <input type="text" placeholder="Search....">
+                        <i class="search link icon"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <a href="#" class="ui menu toggle black icon button m-top-right m-mobile-show">
+            <i class=" sidebar icon "></i>
+        </a>
+    </nav>
+    <!--中间内容-->
+    <div class="m-container-small  m-padded-tb-large ">
+       <div class="ui container">
+           <div class="ui top attached segment">
+               <div class="ui middle aligned two column grid">
+                   <div class="column">
+                       <div class="ui teal header">分类</div>
+                   </div>
+                   <div class="right aligned column">
+                       共 <h2 class="ui orange header m-inline-block m-text-thin" th:text="${#arrays.length(tags)}">14</h2> 片
+                   </div>
+               </div>
+           </div>
+       </div>
+        <div class="ui attached segment m-padded-tb-large">
+            <div class="ui teal segment">
+                <a href="#" target="_blank" class="ui large teal basic left pointing label m-margin-tb-tiny"
+                   th:href="@{/tags/{id}(id=${tag.id})}"
+                   th:classappend="${tag.id==activeTagId} ? 'teal'" th:each="tag : ${tags}">
+                        <span th:text="${tag.name}">方法</span>
+                    <div class="detail" th:text="${#arrays.length(tag.blogs)}"></div>
+                </a>
+
+            </div>
+        </div>
+
+        <div class="ui top attached teal segment">
+            <div class="ui segment padded vertical m-padded-tb-big m-mobile-lr-clear" th:each="blog : ${pageInfo.list}">
+                <div class="ui mobile reversed stackable grid">
+                    <div class="eleven wide column">
+                        <H3 class="ui header"><a href="#"th:href="@{/blog/{id}(id=${blog.id})}" th:text="${blog.title}">测试用标题</a></H3>
+                        <p class="m-text" th:text="${blog.description}">
+                            原曲《少女绮想曲》，又名《城管执法曲》，毕竟永夜抄4面的灵梦也是很凶残的嘛。 东方的同人音乐很多，可以说每一首游戏原曲都有数十个同人音乐的存在，而像是《少女绮想曲》这种角色专属音乐就更多了。 嘛，扯多了，安利了一波，那么，各位晚安~
+                        </p>
+                        <div class="ui stackable grid">
+                            <div class="row">
+                                <div class="eleven wide column">
+                                    <div class="ui  horizontal link list">
+                                        <div class="item">
+                                            <img th:src="@{${blog.user.avatar}}" src="https://picsum.photos/seed/picsum/80/80" alt=""
+                                                 class="ui avatar image">
+                                            <div class="content"><a href="#" th:text="${blog.user.nickname}" class="header">明锦</a></div>
+                                        </div>
+                                        <div class="item">
+                                            <i class="calendar icon"></i> <span th:text="${#dates.format(blog.updateTime, 'yyyy-MM-dd')}">2020-3-02</span>
+                                        </div>
+                                        <div class="item">
+                                            <i class="eye icon"></i> <span th:text="${blog.views}">2342</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="right aligned five wide column">
+                                    <a href="#" target="_blank" class="ui teal basic label  m-padded-tiny" th:text="${blog.type.name}">认知升级</a>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="column">
+                                    <div class="ui teal basic left pointing label m-padded-tiny" th:href="@{/tags/{id}(id=${tag.id})}" th:each="tag : ${blog.tags}" th:text="${tag.name}">方法论</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="five wide column">
+                        <a href="#" target="_blank" th:href="@{/blog/{id}(id=${blog.id})}">
+                            <img src="https://picsum.photos/seed/picsum/800/400" alt="" th:src="@{${blog.firstPicture}}" class="ui rounded image" >
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="ui bottom attached segment">
+            <div class="ui middle aligned  two column grid">
+                <div class=" column">
+                    <a href="#" class="ui mini teal basic button"th:href="@{/(pageNum=${pageInfo.hasPreviousPage}?${pageInfo.prePage}:1)}">上一页</a>
+                </div>
+                <div class=" right aligned column">
+                    <a href="#" class="ui mini teal basic button" th:href="@{/(pageNum=${pageInfo.hasNextPage}?${pageInfo.nextPage}:${pageInfo.pages})}">下一页</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--底部-->
+    <footer class="ui inverted vertical segment m-padded-tb-massive">
+            <div class="ui center aligned container">
+                <div class="ui inverted  divided stackable grid">
+                    <div class="three wide column">
+                      <div class="ui inverted link list">
+                          <div class="item">
+                              <img src="../static/img/mmqrcode1591716255038.png" alt="" class="ui rounded image " style="width: 110px">
+                          </div>
+                      </div>
+                    </div>
+                    <div class="three wide column">
+                        <h4 class="ui inverted header">最新博客</h4>
+                        <div class="ui inverted link list">
+                            <a href="#" class="item">用户故事(User)</a>
+                            <a href="#" class="item">用户故事(User)</a>
+                            <a href="#" class="item">用户故事(User)</a>
+                        </div>
+                    </div>
+                    <div class="three wide column">
+                        <h4 class="ui inverted header">最新博客</h4>
+                        <div class="ui inverted link list">
+                            <a href="#" class="item">用户故事(User)</a>
+                            <a href="#" class="item">用户故事(User)</a>
+                            <a href="#" class="item">用户故事(User)</a>
+                        </div>
+                    </div>
+                    <div class="seven wide column">
+                        <h4 class="ui inverted header">最新博客</h4>
+                        <p>
+                            上海互联网举报中心 | 12318全国文化市场举报网站 | 沪公网安备31011002002436号 | 儿童色情信息举报专区
+
+                            网上有害信息举报专区：中国互联网违法和不良信息举报中心
+
+                            亲爱的市民朋友，上海警方反诈劝阻电话“962110”系专门针对避免您财产被骗受损而设，请您一旦收到来电，立即接听。
+
+                            公司名称：上海宽娱数码科技有限公司|公司地址：上海市杨浦区政立路485号|电话：021-25099888
+
+                        </p>
+                    </div>
+                </div>
+                <div class="ui inverted section divider"></div>
+                <p class="m-text-lined m-text-spaced m-text-thin m-opacity-tiny">广播电视节目制作经营许可证：（沪）字第01248号 增值电信业务经营许可证 沪B2-20100043 互联网ICP备案：沪ICP备13002172号-3</p>
+            </div>
+
+    </footer>
+
+<script src="https://code.jquery.com/jquery-3.1.1.min.js" crossorigin="anonymous"></script>
+ <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+
+    <script >
+
+        $('.menu.toggle').click(function () {
+
+            $(".m-item").toggleClass("m-mobile-hide");
+        });
+        $("#payButton").popup({
+            popup : $(".payQR.popup"),
+            on : "click",
+            position: "bottom center"
+        });
+
+    </script>
+</body>
+</html>

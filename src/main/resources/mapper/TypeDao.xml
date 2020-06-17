@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmj.blog.dao.TypeDao">
+
+    <resultMap id="Type" type="com.cmj.blog.doamin.Type">
+        <id property="id" column="id"></id>
+        <result property="name" column="name"></result>
+        <collection property="blogs"  ofType="com.cmj.blog.doamin.Blog">
+            <id property="id" column="bid"></id>
+            <result property="title" column="title"></result>
+            <result property="typeId" column="type_id"></result>
+        </collection>
+    </resultMap>
+
+    <insert id="saveType"  useGeneratedKeys="true" keyProperty="id">
+        insert into blog.t_type(name) values (#{type.name});
+    </insert>
+
+    <delete id="deleteType" >
+        delete from blog.t_type where id = #{id}
+    </delete>
+
+    <update id="updateType" parameterType="com.cmj.blog.doamin.Type" >
+        update blog.t_type set name = #{type.name} where id = #{type.id};
+    </update>
+
+    <select id="getType" resultType="com.cmj.blog.doamin.Type">
+        select id,name from blog.t_type where id = #{id}
+    </select>
+
+    <select id="getTypeByName" resultType="com.cmj.blog.doamin.Type">
+        select * from blog.t_type where name = #{name}
+    </select>
+
+    <select id="getBlogType" resultMap="Type">
+        select t.id id, t.name, b.id bid, b.title, b.type_id
+        from t_type t, t_blog b
+        where t.id = b.type_id
+    </select>
+
+    <select id="getAllType" resultType="com.cmj.blog.doamin.Type">
+        select * from t_type
+    </select>
+
+
+
+
+
+</mapper>
